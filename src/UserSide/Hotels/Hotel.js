@@ -1,25 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Container, Paper, Button } from "@mui/material";
-import Toolbar from "@mui/material/Toolbar";
-import Stack from "@mui/material/Stack";
+import { Box, Typography, Container, Paper, Button, Grid } from "@mui/material";
+import Navbar from "../Navbar"; 
 import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import Autocomplete from "@mui/material/Autocomplete";
 import { styled } from "@mui/material/styles";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
 import MuiAppBar from "@mui/material/AppBar";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import TrainOutlinedIcon from "@mui/icons-material/TrainOutlined";
 import FlightOutlinedIcon from "@mui/icons-material/FlightOutlined";
 import HotelIcon from "@mui/icons-material/Hotel";
@@ -32,6 +19,10 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PersonIcon from '@mui/icons-material/Person';
+import ChildCareIcon from '@mui/icons-material/ChildCare';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -53,30 +44,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
 const icons = {
   Hotel: <HotelIcon />,
   Bus: <DirectionsBusIcon />,
@@ -94,15 +61,11 @@ function Hotel() {
   const [searchcity, setSearchcity] = React.useState();
   const [date, setDate] = React.useState();
   let navigate = useNavigate();
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+ 
   const handlechange = (e) => {
     console.log({ city: e.target.value });
   };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+ 
   const handleclick = (id) => {
     if (id === 0) {
       navigate("/Hotel");
@@ -196,213 +159,209 @@ function Hotel() {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open} sx={{ backgroundColor: "Blue" }}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Wanderlust Journeys
+      <Navbar />
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: `linear-gradient(rgba(26, 35, 126, 0.8), rgba(121, 134, 203, 0.8)), url('https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          pt: 10,
+          pb: 4
+        }}
+      >
+        <Container maxWidth="md">
+          <Box sx={{ textAlign: 'center', mb: 6, color: 'white' }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, mb: 2 }}>
+              Find Your Perfect Stay
             </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-          variant="persistent"
-          anchor="left"
-          open={open}
-        >
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "ltr" ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List>
-            {["Hotel", "Bus", "Flight", "Train", "Holiday"].map((text, id) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    handleclick(id);
-                  }}
-                >
-                  <ListItemIcon>{icons[text]}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </Drawer>
-        <Main open={open}>
-          <DrawerHeader />
-        </Main>
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Box
-          sx={{
-            width: "40%",
-            padding: "1rem",
-            backgroundColor: "rgba(250, 250, 255, 0.8)",
-          }}
-        >
-          <Container
-            maxWidth="sm"
+            <Typography variant="h6" sx={{ opacity: 0.9 }}>
+              Discover comfort and luxury in your destination
+            </Typography>
+          </Box>
+
+          <Paper
+            elevation={6}
             sx={{
-              display: "flex",
-              justifyContent: "left",
-              alignItems: "center",
+              p: 4,
+              borderRadius: 3,
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
             }}
           >
-            <Paper
-              elevation={4}
-              sx={{
-                padding: 3,
-                width: "100%",
-                borderRadius: 4,
-                backgroundColor: "rgba(250, 250, 255, 0.8)",
-                backdropFilter: "blur(30px)",
-                boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.2)",
-              }}
-            >
-              <Stack spacing={5} sx={{ width: "auto" }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
                 <Autocomplete
-                  id="country-customized-option-demo"
                   options={city}
-                  CloseOnSelect
                   value={searchcity}
-                  onChange={(newValue) => {
-                    setSearchcity(newValue);
-                  }}
-                  getOptionLabel={(option) => `${option.label} `}
+                  onChange={(_, newValue) => setSearchcity(newValue)}
+                  getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
-                    <TextField {...params} label="Choose a City" />
+                    <TextField
+                      {...params}
+                      label="Where would you like to stay?"
+                      variant="outlined"
+                      fullWidth
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <HotelIcon sx={{ color: '#1a237e', mr: 1 }} />
+                        ),
+                      }}
+                    />
                   )}
                 />
-              </Stack>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateRangePicker"]}>
-                  <Box sx={{ width: "auto", height: "auto" }}>
-                    <DateRangePicker
-                      value={date}
-                      onChange={(newValue) => handleDateChange(newValue)}
-                      localeText={{ start: "Check-in", end: "Check-out" }}
-                      renderInput={(startProps, endProps) => (
-                        <>
-                          <TextField {...startProps} />
-                          <Box sx={{ mx: 2 }}> to </Box>
-                          <TextField {...endProps} />
-                        </>
-                      )}
-                    />
-                  </Box>
-                </DemoContainer>
-              </LocalizationProvider>
-              <Accordion
-                sx={{
-                  marginTop: "20px",
-                  width: "auto",
-                  backgroundColor: "rgba(250, 250, 255, 0.8)",
-                }}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2-content"
-                  id="panel2-header"
-                >
-                  <div>
-                    Travellers: {adult} Adults, {children} Children, Rooms:{" "}
-                    {room}
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <div>
-                    <div style={{ width: "10px" }}>Adult:</div>
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        setAdult(adult + 1);
-                      }}
-                    >
-                      +
-                    </Button>
-                    <Button variant="contained">{adult}</Button>
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        decrementadult();
-                      }}
-                    >
-                      -
-                    </Button>
-                    <div style={{ width: "10px" }}>Children:</div>
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        setChildren(children + 1);
-                      }}
-                    >
-                      +
-                    </Button>
-                    <Button variant="contained">{children}</Button>
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        decrementchildren();
-                      }}
-                    >
-                      -
-                    </Button>
-                    <div>
-                      <div style={{ width: "10px" }}>Room:</div>
-                      <Button
-                        sx={{ marginRight: "10px" }}
-                        variant="contained"
-                        onClick={() => {
-                          setRoom(room + 1);
-                        }}
-                      >
-                        Add Room
-                      </Button>
+              </Grid>
 
-                      <Button
-                        variant="contained"
-                        onClick={() => {
-                          decrementroom();
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  </div>
-                </AccordionDetails>
-              </Accordion>
-              <br />
-              <Button variant="contained" onClick={handleclick2}>
-                Search Hotels
-              </Button>
-            </Paper>
-          </Container>
-        </Box>
+              <Grid item xs={12}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateRangePicker
+                    value={date}
+                    onChange={handleDateChange}
+                    sx={{
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: '#1a237e',
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    p: 3,
+                    borderRadius: 2,
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #e9ecef'
+                  }}
+                >
+                  <Grid container spacing={3}>
+                    {[
+                      { 
+                        label: 'Adults',
+                        value: adult,
+                        set: setAdult,
+                        icon: <PersonIcon sx={{ color: '#1a237e' }} />,
+                        description: 'Age 13+ years'
+                      },
+                      { 
+                        label: 'Children',
+                        value: children,
+                        set: setChildren,
+                        icon: <ChildCareIcon sx={{ color: '#1a237e' }} />,
+                        description: 'Age 2-12 years'
+                      },
+                      { 
+                        label: 'Rooms',
+                        value: room,
+                        set: setRoom,
+                        icon: <HotelIcon sx={{ color: '#1a237e' }} />,
+                        description: 'Number of rooms'
+                      },
+                    ].map((item) => (
+                      <Grid item xs={12} md={4} key={item.label}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          {item.icon}
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                              {item.label}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {item.description}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box sx={{ 
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          mt: 2
+                        }}>
+                          <Button
+                            onClick={() => item.value > 0 && item.set(item.value - 1)}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              minWidth: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              border: '2px solid #1a237e',
+                              color: '#1a237e',
+                              '&:hover': {
+                                border: '2px solid #1a237e',
+                                backgroundColor: 'rgba(26, 35, 126, 0.04)'
+                              },
+                              '&.Mui-disabled': {
+                                borderColor: '#e0e0e0'
+                              }
+                            }}
+                            disabled={item.value === 0}
+                          >
+                            <RemoveIcon />
+                          </Button>
+                          <Typography 
+                            sx={{ 
+                              minWidth: '40px',
+                              textAlign: 'center',
+                              fontSize: '1.1rem',
+                              fontWeight: 600,
+                              color: '#1a237e'
+                            }}
+                          >
+                            {item.value}
+                          </Typography>
+                          <Button
+                            onClick={() => item.set(item.value + 1)}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              minWidth: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              border: '2px solid #1a237e',
+                              color: '#1a237e',
+                              '&:hover': {
+                                border: '2px solid #1a237e',
+                                backgroundColor: 'rgba(26, 35, 126, 0.04)'
+                              }
+                            }}
+                          >
+                            <AddIcon />
+                          </Button>
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  onClick={handleclick2}
+                  sx={{
+                    backgroundColor: '#1a237e',
+                    py: 1.5,
+                    fontSize: '1.1rem',
+                    '&:hover': {
+                      backgroundColor: '#000051',
+                    },
+                  }}
+                >
+                  Search Hotels
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Container>
       </Box>
     </>
   );

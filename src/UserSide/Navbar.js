@@ -1,156 +1,171 @@
-import React from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import TrainOutlinedIcon from "@mui/icons-material/TrainOutlined";
-import FlightOutlinedIcon from "@mui/icons-material/FlightOutlined";
-import HotelIcon from "@mui/icons-material/Hotel";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
-import DeckOutlinedIcon from "@mui/icons-material/DeckOutlined";
-import { useNavigate } from "react-router-dom";
-import Dashboard2 from "./../assets/Dashboard2.jpg";
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem ,Divider} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import HotelIcon from '@mui/icons-material/Hotel';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import BeachAccessIcon from '@mui/icons-material/BeachAccess';
+import MenuIcon from '@mui/icons-material/Menu';
+import ExploreIcon from '@mui/icons-material/Explore';
+import PublicIcon from '@mui/icons-material/Public';
 
-const drawerWidth = 240;
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
-const icons = {
-  Hotel: <HotelIcon />,
-  Bus: <DirectionsBusIcon />,
-  Flight: <FlightOutlinedIcon />,
-  Train: <TrainOutlinedIcon />,
-  Holiday: <DeckOutlinedIcon />,
-};
 
 function Navbar() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleClose = () => {
+    setAnchorEl(null);
   };
-  const handleclick = (id) => {
-    if (id === 0) {
-      navigate("/Hotel");
-    } else if (id === 1) {
-      navigate("/Bus");
-    } else if (id === 2) {
-      navigate("/Flight");
-    } else if (id === 3) {
-      navigate("/Train");
-    } else if (id === 4) {
-      navigate("/Holiday");
-    }
-  };
+
+  const navItems = [
+    { title: 'Hotels', icon: <HotelIcon />, path: '/Hotel' },
+    { title: 'Flights', icon: <FlightTakeoffIcon />, path: '/Flight' },
+    { title: 'Buses', icon: <DirectionsBusIcon />, path: '/Bus' },
+    { title: 'Holidays', icon: <BeachAccessIcon />, path: '/Holiday' },
+  ];
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        open={open}
-        sx={{ backgroundColor: "white", color: "blue" }}
-      >
-        <Toolbar>
-          <b>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
-            >
-              <MenuIcon />
-            </IconButton>
-          </b>
-          <Typography variant="h6" noWrap component="div">
+    <AppBar position="fixed" sx={{ 
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(8px)',
+      boxShadow: '0 2px 15px rgba(0,0,0,0.1)',
+      height: '64px' // Added fixed height
+    }}>
+      <Toolbar sx={{ 
+        padding: { xs: 1, md: 2 }, // Reduced padding
+        gap: 2, // Reduced gap
+        minHeight: '64px !important' // Override default Toolbar height
+      }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1, // Reduced gap
+          flexGrow: 1,
+          cursor: 'pointer' 
+        }} onClick={() => navigate('/')}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            position: 'relative',
+            background: 'linear-gradient(135deg, #FF385C, #FF1F4C)', // Changed to match theme
+            borderRadius: '50%',
+            p: 0.75,
+            boxShadow: '0 2px 10px rgba(255, 56, 92, 0.3)' // Updated shadow color
+          }}>
+            <PublicIcon sx={{ 
+              color: 'rgba(255, 255, 255, 0.9)', 
+              fontSize: 24,
+              position: 'absolute'
+            }} />
+            <ExploreIcon sx={{ 
+              color: 'white', 
+              fontSize: 30,
+              animation: 'rotate 20s linear infinite',
+              '@keyframes rotate': {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' }
+              }
+            }} />
+          </Box>
+          <Typography 
+            variant="h6" // Changed from h5 to h6
+            sx={{ 
+              fontWeight: 700,
+              fontFamily: '"Poppins", sans-serif',
+              letterSpacing: '0.5px',
+              background: 'linear-gradient(45deg, #FF385C, #FF1F4C)', // Matched with theme
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.1)'
+            }}
+          >
             Wanderlust Journeys
           </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {["Hotel", "Bus", "Flight", "Train", "Holiday"].map((text, id) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  handleclick(id);
-                }}
-              >
-                <ListItemIcon>{icons[text]}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
+        </Box>
+
+        <Box sx={{ 
+          display: { xs: 'none', md: 'flex' }, 
+          alignItems: 'center', 
+          gap: 3 // Reduced gap
+        }}>
+          {navItems.map((item) => (
+            <Button
+              key={item.title}
+              startIcon={React.cloneElement(item.icon, { 
+                sx: { fontSize: 20, mr: 0.5 } // Reduced icon size
+              })}
+              onClick={() => navigate(item.path)}
+              sx={{
+                color: '#333',
+                fontSize: '0.95rem', // Reduced font size
+                fontWeight: 500,
+                px: 2, // Reduced padding
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 56, 92, 0.1)',
+                  color: '#FF385C',
+                  transform: 'translateY(-2px)'
+                }
+              }}
+            >
+              {item.title}
+            </Button>
           ))}
-        </List>
-        <Divider />
-      </Drawer>
-      <DrawerHeader />
-    </Box>
+          <Box sx={{ 
+            ml: 3, // Reduced margin
+            display: 'flex', 
+            gap: 2, // Reduced gap
+            borderLeft: '2px solid #eee',
+            pl: 3 // Reduced padding
+          }}>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/login')}
+              sx={{
+                color: '#FF385C',
+                borderColor: '#FF385C',
+                borderRadius: 2,
+                px: 2.5, // Reduced padding
+                py: 0.75,
+                fontSize: '0.9rem', // Reduced font size
+                fontWeight: 500,
+                '&:hover': {
+                  borderColor: '#FF385C',
+                  backgroundColor: 'rgba(255, 56, 92, 0.1)',
+                }
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => navigate('/signup')}
+              sx={{
+                backgroundColor: '#FF385C',
+                borderRadius: 2,
+                px: 2.5, // Reduced padding
+                py: 0.75,
+                fontSize: '0.9rem', // Reduced font size
+                fontWeight: 500,
+                '&:hover': {
+                  backgroundColor: '#FF1F4C',
+                }
+              }}
+            >
+              Sign Up
+            </Button>
+          </Box>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
 

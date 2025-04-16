@@ -221,7 +221,7 @@ function ItineraryInfo() {
               </Typography>
               <div
                 id="carouselExampleIndicators"
-                className="carousel slide"
+                className="carousel slide 1"
                 data-ride="carousel"
               >
                 <ol className="carousel-indicators">
@@ -252,7 +252,7 @@ function ItineraryInfo() {
                     >
                       <img
                         className="d-block w-75 mx-auto"
-                        src={image}
+                        src={Hawamahal}
                         alt={`Slide ${idx + 1}`}
                       />
                     </div>

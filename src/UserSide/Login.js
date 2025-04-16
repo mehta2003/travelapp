@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   TextField,
@@ -6,110 +6,124 @@ import {
   Typography,
   Box,
   Paper,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router-dom";
-// import Login2 from "./../assets/Login2.jpg";
-// import { Repeat } from "@mui/icons-material";
+import axios from "axios";
 
 function Login() {
-  const [data1, setData1] = React.useState({});
-
-  const handleChange = (e, type) => {
-    setData1({ ...data1, [type]: e.target.value });
-  };
+  const [data, setData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
   let navigate = useNavigate();
-  const handleclick = () => {
-    console.log(data1);
-    navigate("/Dashboard");
+
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const validate = () => {
+    let tempErrors = {};
+    tempErrors.email =
+      /^\S+@\S+\.\S+$/.test(data.email) ? "" : "Invalid email format";
+    tempErrors.password =
+      data.password.length >= 6 ? "" : "Password must be at least 6 characters long";
+    setErrors(tempErrors);
+    return Object.values(tempErrors).every((x) => x === "");
+  };
+
+  const handleClick = async () => {
+    
+    if (validate()) {
+      try {
+        
+        const response = await axios.post("http://localhost:3001/loginuser/getlogin", {
+          Email: data.email,
+          Password: data.password,
+        });
+        if (response.data.isSuccess) {
+          console.log("Login Success", response.data);
+          navigate("/Dashboard");
+        } else {
+          setApiError(response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        
+        console.error("Error logging in:", error);
+        setApiError("Invalid Credentials");
+      }
+    }
   };
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" sx={{ backgroundColor: "blue" }}>
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Wanderlust Journeys
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box>
+      <AppBar position="static" sx={{ backgroundColor: "#1E88E5" }}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Wanderlust Journeys
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
       <Box
-        style={{
-          // display: "flex",
-          // flexWrap: "wrap",
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          // backgroundImage: `url(${Login2})`,
-          backgroundRepeat: "no-repeat",
-          maxheight: "100%",
-          maxWidth: "100%",
-          backgroundPosition: "center",
           backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <Container
-          maxWidth="sm"
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "80vh",
-            maxWidth: "100vh",
-          }}
-        >
+        <Container maxWidth="sm">
           <Paper
-            elevation={4}
+            elevation={6}
             sx={{
-              padding: 3,
-              width: "90%",
-              borderRadius: 4,
-              backgroundColor: "rgba(250, 250, 255, 0.8)",
-              backdropFilter: "blur(10px)",
-              // boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.2)",
+              padding: 4,
+              borderRadius: 3,
+              backgroundColor: "rgba(255, 255, 255, 0.85)",
+              backdropFilter: "blur(8px)",
             }}
           >
-            <Box
-              component="form"
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "100%" },
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h5" component="h1" sx={{ padding: 3 }}>
-                Welcome
+            <Box component="form" sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Typography variant="h5" sx={{ mb: 3 }}>
+                Welcome Back
               </Typography>
+
+              {apiError && <Typography color="error">{apiError}</Typography>}
 
               <TextField
                 label="Email"
                 type="email"
+                name="email"
                 variant="outlined"
-                onChange={(e) => handleChange(e, "Email")}
+                fullWidth
+                error={!!errors.email}
+                helperText={errors.email}
+                onChange={handleChange}
+                sx={{ mb: 2 }}
               />
 
               <TextField
                 label="Password"
                 type="password"
-                inputProps={{ maxLength: 10 }}
+                name="password"
                 variant="outlined"
-                onChange={(e) => handleChange(e, "ConfirmPassword")}
+                fullWidth
+                error={!!errors.password}
+                helperText={errors.password}
+                onChange={handleChange}
+                sx={{ mb: 3 }}
               />
-              <br />
-              <br />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  handleclick();
-                }}
-              >
+
+              <Button variant="contained" color="primary" fullWidth onClick={handleClick}>
                 Login
               </Button>
+
+              <Typography sx={{ mt: 2 }}>
+                Not registered? <Button onClick={() => navigate("/Register")} sx={{ textTransform: "none" }}>Sign up</Button>
+              </Typography>
             </Box>
           </Paper>
         </Container>

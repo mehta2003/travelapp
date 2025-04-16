@@ -16,6 +16,14 @@ import {
   FormControlLabel,
   Divider,
 } from "@mui/material";
+import {
+  Container,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
+import { CheckCircleOutline } from '@mui/icons-material';
 import { DatePicker } from "@mui/lab";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -29,39 +37,38 @@ import { TableCell, TableRow, TableBody, Table } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 // import IconButton from "@mui/material/IconButton";
 import AppBar from "@mui/material/AppBar";
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import FlightLandIcon from '@mui/icons-material/FlightLand';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
+import LuggageIcon from '@mui/icons-material/Luggage';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import { Collapse } from '@mui/material';
 
 const FlightDetails = () => {
+  // Update state declarations
   const [selectedDate, setSelectedDate] = useState(null);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState([]);
-  const [departcity, setDepartcity] = useState([]);
-  const [goingcity, setGoingcity] = useState([]);
+  const [departcity, setDepartcity] = useState('');
+  const [goingcity, setGoingcity] = useState('');
   const [flightDetails, setFlightDetails] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Spice Saver");
 
   let navigate = useNavigate();
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setOpen(false);
-  };
-  const handleclickbook = () => {
-    navigate("/FlightBooking");
-  };
-
+  // Single useEffect
   useEffect(() => {
-    const departcity = JSON.parse(localStorage.getItem("departcity"));
-    const goingcity = JSON.parse(localStorage.getItem("goingcity"));
-    if (departcity) {
-      setDepartcity(departcity);
-    }
-    if (goingcity) {
-      setGoingcity(goingcity);
-    }
+    const departCity = localStorage.getItem("departcity");
+    const goingCity = localStorage.getItem("goingcity");
+    
+    setDepartcity(departCity ? JSON.parse(departCity) : '');
+    setGoingcity(goingCity ? JSON.parse(goingCity) : '');
 
+    // Flight details initialization
     const flightdetails = [
       {
-        id: "2A3301",
+        infoid: "2A3301",
         Airlines: "Indigo",
         Departcity: "Delhi(DEL)",
         Goingcity: "Ahmedabad(AMD)",
@@ -82,7 +89,7 @@ const FlightDetails = () => {
               preferred: "Chargeable",
               indigoMax: "Chargeable",
               CheckinBaggage: "15 Kgs",
-              CabinBaggage: "7 Kgs",
+              CabinBaggage: "0 Kgs",
               Meal: "Chargeable",
             },
           },
@@ -103,11 +110,96 @@ const FlightDetails = () => {
             price: "₹8,009",
             details: {
               Flexibility: ["INR 3,600 within 3 days"],
-
+               Preferred: "FREE",
               CheckinBaggage: "15 Kgs",
               CabinBaggage: "7 Kgs",
               Seats: "Free",
+  
+              Meal: "Complimentary meal",
+            },
+          },
+        ],
+      },
+    ];
 
+    setFlightDetails(flightdetails);
+  }, []);
+
+  // Remove the second useEffect completely
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setOpen(false);
+  };
+  const handleclickbook = () => {
+    navigate("/FlightBooking");
+  };
+
+  useEffect(() => {
+    const departCity = localStorage.getItem("departcity");
+    const goingCity = localStorage.getItem("goingcity");
+    
+    if (departCity) {
+      setDepartcity(JSON.parse(departCity));
+    }
+    if (goingCity) {
+      setGoingcity(JSON.parse(goingCity));
+    }
+    const handleFlightSelection = (flight) => {
+      localStorage.setItem("selectedFlight", JSON.stringify(flight));
+      navigate("/FlightBooking");
+    };
+    
+    
+    
+    const flightdetails = [
+      {
+        infoid: "2A3301",
+        Airlines: "Indigo",
+        Departcity: "Delhi(DEL)",
+        Goingcity: "Ahmedabad(AMD)",
+        Date: "Fri, 5 July",
+        price: "5000",
+        duration: "2h 15m",
+        stop: "Nonstop",
+        DepartTime: "02:15",
+        ArrivalTime: "05:15",
+        DepartAirport: "Indira Gandhi (T-3)",
+        ArrivalAirport: " Sardar Vallabh Bhai Patel, T-2",
+        options: [
+          {
+            type: "Indigo Saver",
+            price: "₹3,954",
+            details: {
+              Flexibility: "INR 3,600 within 3 days",
+              preferred: "Chargeable",
+              indigoMax: "Chargeable",
+              CheckinBaggage: "15 Kgs",
+              CabinBaggage: "0 Kgs",
+              Meal: "Chargeable",
+            },
+          },
+          {
+            type: "Best Value",
+            price: "₹4,536",
+            details: {
+              Flexibility: ["INR 3,350 within 3 days"],
+              Preferred: "FREE",
+              CheckinBaggage: "15 Kgs",
+              CabinBaggage: "7 Kgs",
+              Seats: "Chargeable",
+              Meal: "Chargeable",
+            },
+          },
+          {
+            type: "Indigo Max",
+            price: "₹8,009",
+            details: {
+              Flexibility: ["INR 3,600 within 3 days"],
+               Preferred: "FREE",
+              CheckinBaggage: "15 Kgs",
+              CabinBaggage: "7 Kgs",
+              Seats: "Free",
+  
               Meal: "Complimentary meal",
             },
           },
@@ -143,196 +235,297 @@ const FlightDetails = () => {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ backgroundColor: "Blue" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#1a237e", boxShadow: 3 }}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            sx={{ mr: 2 }}
-          >
-            {/* <MenuIcon /> */}
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h5" sx={{ fontWeight: 600, flexGrow: 1 }}>
             Wanderlust Journeys
           </Typography>
         </Toolbar>
       </AppBar>
-      <Box
-        display="flex"
-        alignItems="center"
-        style={{ background: "rgba(255,255,255,0.7)" }}
-      >
-        <IconButton>
-          <ArrowBackIosIcon />
-        </IconButton>
-        <Box display="flex" overflow="auto" whiteSpace="nowrap" flex="1">
-          {dates.map((item, index) => (
-            <Box key={index} textAlign="center" padding="10px">
-              <Typography variant="subtitle2">{item.date}</Typography>
-              <Typography variant="h6">{item.price}</Typography>
-            </Box>
-          ))}
-        </Box>
-        <IconButton>
-          <ArrowForwardIosIcon />
-        </IconButton>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <IconButton
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            <CalendarTodayIcon />
-            <DatePicker
-              label="Basic date picker"
-              value={selectedDate}
-              onChange={handleDateChange}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </IconButton>
-          {open && <Date1 />}
-        </LocalizationProvider>
-      </Box>
 
-      {flightDetails.map((flight, index) => (
-        <Accordion
-          sx={{ marginTop: 2 }}
-          key={index}
-          expanded={isPanelExpanded(`panel${index}`)}
-          onChange={handleChange(`panel${index}`)}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={`panel${index}-content`}
-            id={`panel${index}-header`}
-          >
-            <Typography style={{ flex: 1 }}>
-              <Grid container spacing={3} sx={{ padding: 2 }}>
-                <Grid item xs={2} sx={{ padding: 2 }}>
-                  <Typography variant="body1">{flight.Airlines}</Typography>
-                  <Typography variant="body2">{flight.id}</Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography variant="h6">{flight.Departcity}</Typography>
-                  <Typography variant="body2">{flight.DepartTime}</Typography>
-                  <Typography variant="body2">{flight.Date}</Typography>
-                  <Typography variant="body2">
-                    {flight.DepartAirport}
-                  </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography variant="body2">{flight.duration}</Typography>
-                  <Divider sx={{ marginY: 3 }} />
-                  <Typography variant="body2">{flight.stop}</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="h6">{flight.Goingcity}</Typography>
-                  <Typography variant="body2">{flight.ArrivalTime}</Typography>
-                  <Typography variant="body2">{flight.Date}</Typography>
-                  <Typography variant="body2">
-                    {flight.ArrivalAirport}
-                  </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                  <Button variant="contained" color="primary">
-                    Book
-                  </Button>
-                </Grid>
-              </Grid>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: `linear-gradient(rgba(26, 35, 126, 0.8), rgba(121, 134, 203, 0.8)), url('https://images.pexels.com/photos/379419/pexels-photo-379419.jpeg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          pt: 10,
+          pb: 4
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h4" sx={{ color: 'white', mb: 1, textAlign: 'center' }}>
+              {departcity || 'Loading...'} to {goingcity || 'Loading...'}
             </Typography>
-            <Typography style={{ marginLeft: "auto" }}>
-              {isPanelExpanded(`panel${index}`)
-                ? "Hide details"
-                : "View details"}
+            <Typography variant="subtitle1" sx={{ color: 'white', opacity: 0.9, textAlign: 'center' }}>
+              {flightDetails[0]?.Date || 'Select your flight'}
             </Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ size: "auto" }}>
-            <RadioGroup
-              aria-labelledby="demo-customized-radios"
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
+          </Box>
+
+          {[...Array(5)].map((_, index) => (
+            <Card
+              key={index}
+              sx={{
+                mb: 3,
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 1)',
+                  transform: 'translateY(-2px)',
+                },
+                transition: 'all 0.3s',
+                borderRadius: 2,
+                overflow: 'visible'
+              }}
             >
-              <Grid container spacing={3}>
-                {flight.options.map((option, optionIndex) => (
-                  <Grid item xs={12} sm={4} key={optionIndex}>
-                    <Card variant="outlined">
-                      <CardContent
-                        style={{ fontSize: "2rem", padding: 7, margin: 10 }}
-                      >
-                        <FormControlLabel
-                          value={option.type}
-                          control={<Radio />}
-                          label={
-                            <Typography
-                              variant="h6"
-                              style={{
-                                fontWeight: "bold",
-                                fontFamily: "Arial, sans-serif",
-                              }}
-                            >
-                              {option.type}
-                            </Typography>
+              <Box sx={{ p: 3 }}>
+               
+
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm={2}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <img 
+                        src="https://logos-world.net/wp-content/uploads/2023/01/IndiGo-Logo.png" 
+                        alt="Airline Logo" 
+                        style={{ width: '120px', objectFit: 'contain' }} 
+                      />
+                      <Typography variant="subtitle2" color="text.secondary">
+                        6E-2134
+                      </Typography>
+                    </Box>
+                  </Grid>
+                
+                  <Grid item xs={12} sm={8}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                     <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h4" color="primary" fontWeight="500">06:30</Typography>
+                        <Typography variant="subtitle1">Delhi (DEL)</Typography>
+                        <Typography variant="caption" color="text.secondary">Terminal 3</Typography>
+                      </Box>
+                
+                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', px: 2 }}>
+                        <Typography variant="caption" sx={{ 
+                          mb: 1,
+                          color: 'text.secondary',
+                          display: 'flex',
+                          alignItems: 'center',
+                          bgcolor: 'rgba(26, 35, 126, 0.08)',
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: 8
+                        }}>
+                          <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5 }} />
+                          2h 30m
+                        </Typography>
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          width: '200px', 
+                          position: 'relative',
+                          '&::after': {
+                            content: '""',
+                            position: 'absolute',
+                            left: '12px',
+                            right: '12px',
+                            height: '2px',
+                            background: 'repeating-linear-gradient(90deg, #1a237e 0px, #1a237e 6px, transparent 6px, transparent 12px)',
+                            animation: 'moveRight 3s linear forwards',
+                          },
+                          '@keyframes moveRight': {
+                            '0%': {
+                              backgroundPosition: '0 0',
+                            },
+                            '100%': {
+                              backgroundPosition: '12px 0',
+                            },
                           }
-                        />
-                        <Table style={{ borderCollapse: "collapse" }}>
-                          <TableBody>
-                            {Object.entries(option.details).map(
-                              ([key, value]) => (
-                                <TableRow>
-                                  <TableCell
-                                    style={{
-                                      borderBottom: "none",
-                                      padding: 5,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      style={{
-                                        fontWeight: "bolder",
-                                        fontFamily: " sans-serif",
-                                      }}
-                                    >
-                                      {`${key}:`}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    style={{
-                                      borderBottom: "none",
-                                      padding: 5,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      style={{ fontFamily: "sans-serif" }}
-                                    >
-                                      {value}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            )}
-                          </TableBody>
-                        </Table>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginTop: "10px", padding: 10 }}
-                          onClick={() => {
-                            handleclickbook();
+                        }}>
+                          <Box 
+                            sx={{ 
+                              position: 'absolute',
+                              left: '0%',
+                              top: '50%',
+                              transform: 'translate(-50%, -50%)',
+                              bgcolor: '#1a237e',
+                              borderRadius: '50%',
+                              p: 0.6,
+                              zIndex: 2,
+                              animation: 'movePlane 6s linear forwards',
+                              '@keyframes movePlane': {
+                                '0%': {
+                                  left: '0%',
+                                },
+                                '100%': {
+                                  left: '100%',
+                                }
+                              }
+                            }}
+                          >
+                            <FlightTakeoffIcon sx={{ 
+                              color: 'white', 
+                              fontSize: '14px',
+                              transform: 'rotate(-15deg)'
+                            }} />
+                          </Box>
+                          <Box sx={{ 
+                            width: '8px', 
+                            height: '8px', 
+                            bgcolor: '#1a237e', 
+                            borderRadius: '50%',
+                            marginLeft: 'auto',
+                            zIndex: 1
+                          }} />
+                        </Box>
+                        <Typography variant="caption" sx={{ 
+                          mt: 1, 
+                          color: '#2e7d32',
+                          bgcolor: 'rgba(46, 125, 50, 0.1)',
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          fontWeight: 500
+                        }}>
+                          <span style={{ fontSize: '8px', color: '#2e7d32' }}>●</span> Non-stop
+                        </Typography>
+                      </Box>
+                
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h4" color="primary" fontWeight="500">09:00</Typography>
+                        <Typography variant="subtitle1">Mumbai (BOM)</Typography>
+                        <Typography variant="caption" color="text.secondary">Terminal 2</Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                
+                  <Grid item xs={12} sm={2}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography 
+                        variant="h5" 
+                        color="primary" 
+                        fontWeight="500"
+                        sx={{ 
+                          fontSize: '1.6rem',
+                          mb: 0.5
+                        }}
+                      >
+                        ₹5,299
+                      </Typography>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          display: 'block',
+                          color: 'success.main',
+                          mb: 1,
+                          fontSize: '0.75rem'
+                        }}
+                      >
+                        Best Price
+                      </Typography>
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={() => setExpanded(expanded === index ? null : index)}
+                        sx={{
+                          borderColor: '#1a237e',
+                          color: '#1a237e',
+                          '&:hover': {
+                            backgroundColor: '#1a237e',
+                            color: 'white'
+                          },
+                          textTransform: 'none',
+                          borderRadius: 2
+                        }}
+                      >
+                        View Fares
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+
+                <Collapse in={expanded === index}>
+                  <Divider sx={{ my: 3 }} />
+                  <Grid container spacing={3}>
+                    {['Saver', 'Flexi', 'Business'].map((type, idx) => (
+                      <Grid item xs={12} md={4} key={idx}>
+                        <Card
+                          sx={{
+                            height: '100%',
+                            border: '2px solid',
+                            borderColor: idx === 1 ? 'primary.main' : 'grey.200',
+                            position: 'relative',
+                            '&:hover': { borderColor: 'primary.main' }
                           }}
                         >
-                          Book Now
-                        </Button>
-                      </CardContent>
-                    </Card>
+                          {idx === 1 && (
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                top: -12,
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                bgcolor: 'primary.main',
+                                color: 'white',
+                                px: 2,
+                                py: 0.5,
+                                borderRadius: 1,
+                              }}
+                            >
+                              Best Value
+                            </Box>
+                          )}
+                          <CardContent>
+                            <Typography variant="h6" gutterBottom color="primary">
+                              {type}
+                            </Typography>
+                            <Typography variant="h4" color="primary" gutterBottom>
+                              ₹{(5299 + idx * 2000).toLocaleString()}
+                            </Typography>
+                            <List dense>
+                              <ListItem>
+                                <ListItemIcon><LuggageIcon color="primary" /></ListItemIcon>
+                                <ListItemText primary="Cabin Bag: 7 Kg" />
+                              </ListItem>
+                              <ListItem>
+                                <ListItemIcon><AirlineSeatReclineNormalIcon color="primary" /></ListItemIcon>
+                                <ListItemText primary={idx === 2 ? "Free Seat Selection" : "Paid Seat Selection"} />
+                              </ListItem>
+                              <ListItem>
+                                <ListItemIcon><FastfoodIcon color="primary" /></ListItemIcon>
+                                <ListItemText primary={idx === 2 ? "Complimentary Meals" : "Meals Available"} />
+                              </ListItem>
+                            </List>
+                          </CardContent>
+                          <Box sx={{ p: 2 }}>
+                            <Button
+                              variant="contained"
+                              fullWidth
+                              onClick={handleclickbook}
+                              sx={{
+                                bgcolor: idx === 1 ? 'primary.main' : 'grey.200',
+                                color: idx === 1 ? 'white' : 'primary.main',
+                                '&:hover': {
+                                  bgcolor: 'primary.main',
+                                  color: 'white'
+                                }
+                              }}
+                            >
+                              Book Now
+                            </Button>
+                          </Box>
+                        </Card>
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
-              </Grid>
-            </RadioGroup>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+                </Collapse>
+              </Box>
+            </Card>
+          ))}
+        </Container>
+      </Box>
     </>
   );
 };
